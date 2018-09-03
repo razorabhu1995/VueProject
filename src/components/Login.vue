@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <div style="background-color: grey;"><center>Login</center></div><br>
     <center>
             <div style="width :  40%">
@@ -13,8 +13,9 @@
                 <b-field label="Password">
                     <b-input type="password"
                         v-model="password"
+                        @keyup.enter.native="login"
                         password-reveal
-                        required>
+                        required >
                     </b-input>
                 </b-field>
                 <button class="button is-primary" @click="login">Login</button>
