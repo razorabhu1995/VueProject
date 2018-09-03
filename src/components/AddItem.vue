@@ -36,6 +36,7 @@
 "use strict";
 import { db } from "../mixins/firebase.js";
 import urlParser from "url-parse";
+import queryString from "query-string";
 
 let items = db.ref("items");
 
@@ -73,9 +74,10 @@ export default {
       }
     },
     onDecode: function(content) {
-      
       var url = new urlParser(content);
-      this.newItem.sn = url.query.split('=')[1];
+      var query = queryString.parse(url.query);
+      console.log(query);
+      this.newItem.sn = query.sn;
       this.paused = true;
     },
     onInit: function(promise) {
