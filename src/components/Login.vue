@@ -57,6 +57,9 @@ export default {
               this.user.password == this.password
             ) {
               this.$router.push({ name: "home" });
+              localStorage.setItem("username", "test");
+              localStorage.setItem("userLoggedIn", 1);
+              localStorage.setItem("email",this.user.email);
               this.email = null;
               this.password = null;
             } else {

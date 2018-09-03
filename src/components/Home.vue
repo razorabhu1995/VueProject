@@ -1,9 +1,16 @@
 <template>
   <div class="hello">
     <nav class="navbar is-primary" style="width:100%" role="navigation" aria-label="dropdown navigation">
-      <a class="navbar-item">
-        <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
-      </a>
+     <div class="navbar-brand">
+            <a class="navbar-item">
+                <img src="https://bulma.io/images/bulma-logo.png" alt="Buefy">
+            </a>
+      </div>
+      <div class="navbar-end">
+              <div class="logout" v-if="userLoggedIn == 1"> 
+                 <button class="button is-danger" @click="logOut">LOG OUT</button>
+              </div>     
+      </div>
     </nav><br>
     <button class="button is-clear" @click="gotoAddItem"> + ADD ITEM</button>
     <div>
@@ -12,16 +19,18 @@
         <tr>
           <th style="text-align: center;">Item Sn</th>
           <th style="text-align: center;">Item Name</th>
-          <th style="text-align: center;">Count</th>
           <th style="text-align: center;">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.sn">
+        <tr v-for="(item,index) in items" :key="index">
           <td style="text-align: center;">{{item.sn}}</td>
           <td style="text-align: center;">{{item.name}}</td>
-          <td style="text-align: center;">{{item.count}}</td>
-          <td style="text-align: center;"><span class="pointer" @click="removeItem(item)">Delete</span></td>
+          <td style="text-align: center;">
+            <button class="button is-clear is-small" @click="removeItem(item)">Delete</button>
+            <button class="button is-clear is-small" @click="removeItem(item)">Edit</button>
+            <button class="button is-clear is-small" @click="removeItem(item)">View</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -31,8 +40,7 @@
 </template>
 
 <script>
-
-import {db} from '../mixins/firebase.js';
+import { db } from "../mixins/firebase.js";
 
 let items = db.ref("items");
 
@@ -47,11 +55,13 @@ export default {
   data() {
     return {
       name: "fast",
+      username: null,
+      userLoggedIn: null
     };
   },
   methods: {
     removeItem: function(item) {
-      items.child(item['.key']).remove();
+      items.child(item[".key"]).remove();
     },
     post: function() {
       console.log(this.name);
@@ -61,10 +71,24 @@ export default {
           console.log(data);
         });
     },
-    gotoAddItem : function(){
+    gotoAddItem: function() {
       this.$router.push({
-        name : 'additem'
-      })
+        name: "additem"
+      });
+    },
+    userinfo: function() {
+      this.username = localStorage.getItem("username");
+      this.userLoggedIn = localStorage.getItem("userLoggedIn");
+    },
+    logOut: function() {
+      localStorage.clear();
+      this.$router.push({name: 'login'});
+    }
+  },
+  mounted() {
+    this.userinfo();
+    if (this.userLoggedIn == null) {
+      this.$router.push({name: 'login'});
     }
   }
 };
@@ -85,5 +109,10 @@ li {
 }
 a {
   color: #42b983;
+}
+.logout {
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
 </style>
